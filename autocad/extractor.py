@@ -42,7 +42,21 @@ def extract_parameters(file_path):
 
         entities = list(doc.modelspace().query('*'))
         for entity in entities:
-            log.info(f"Entity Type: {entity.dxftype()} | Layer: {entity.dxf.layer} | Color: {entity.dxf.color} | params: {dir(entity.dxf.layer)}")
+            # log.info(f"Entity Type: {entity.dxftype()} | Layer: {entity.dxf.layer} | Color: {entity.dxf.color} | params: {dir(entity.dxf.layer)}")
+            log.info(f"Entity Type: {entity.dxftype()} | Layer: {entity.dxf.layer} | Color: {entity.dxf.color} ")
+
+        texts = list(doc.modelspace().query('TEXT'))
+        for text in texts:
+            log.info(f"Text Content: {text.dxf.text}")
+
+        block_references = list(doc.modelspace().query('INSERT'))
+        for block_ref in block_references:
+            log.info(f"Block Name: {block_ref.dxf.name}")
+
+        block_references_with_attributes = list(doc.modelspace().query('INSERT[hasattr()]'))
+        for block_ref in block_references_with_attributes:
+            for attrib in block_ref.attribs():
+                log.info(f"Attribute Value: {attrib.dxf.text}")
 
     except Exception as e:
         log.error("Error extracting parameters: %s", str(e))

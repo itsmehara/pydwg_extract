@@ -6,6 +6,7 @@ Date: Jan 05, 2024
 Notes:
     This file contains the logging related methods to generate log file.
 """
+from datetime import datetime
 import logging
 import os
 
@@ -31,8 +32,9 @@ def get_logger():
         # Add ch to logger
         logger.addHandler(ch)
 
+        dt_str = datetime.now().strftime("%Y%m%d_%H%M%S")
         # Optionally, add a file handler for logging to a file
-        log_file_path = os.path.join("logs", "autocad_extractor.log")
+        log_file_path = os.path.join("logs", f"autocad_extractor_{dt_str}.log")
         os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
         fh = logging.FileHandler(log_file_path)
         fh.setLevel(logging.DEBUG)
