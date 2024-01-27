@@ -17,14 +17,18 @@ log = get_logger()
 def get_output_csv(file_path, f_type="csv"):
     dt_str = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_csv = str(file_path.split(".")[0]) + f"_{dt_str}.{f_type}"
-    # print(output_csv, file_path)
+    # log.info(output_csv, file_path)
     return output_csv
 
 
 def extract_parameters(file_path):
+    doc = ezdxf.readfile(file_path)
+
+    doc_has = [ item for item in dir(doc) ]
+    log.info(f"{doc_has}")
+
     try:
         # Logic for extracting parameters from AutoCAD DWG files
-        doc = ezdxf.readfile(file_path)
         csv_file = get_output_csv(file_path)
         with open(csv_file, "w") as fp:
             # Sample: Extract and log layers
@@ -51,12 +55,36 @@ def extract_parameters(file_path):
 
         block_references = list(doc.modelspace().query('INSERT'))
         for block_ref in block_references:
-            log.info(f"Block Name: {block_ref.dxf.name}")
+            log.info(f"Block Name: {block_ref.dxf.name}, dxfattribs : {block_ref.dxfattribs}")
+            log.info(f"dxftype: {block_ref.dxftype}")
 
-        block_references_with_attributes = list(doc.modelspace().query('INSERT[hasattr()]'))
+        block_references_with_attributes = list(doc.modelspace().query('INSERT:has(attribute)'))
         for block_ref in block_references_with_attributes:
             for attrib in block_ref.attribs():
+                print(1)
                 log.info(f"Attribute Value: {attrib.dxf.text}")
+    except Exception as e:
+        log.error("Error extracting parameters: %s", str(e))
+
+    try:
+        log.info("V^"*100)
+
+        for block_ref in doc.modelspace().query('INSERT'):
+            pass
+            # log.info(dir(block_ref.dxf))
+            # if "CHAIR" in block_ref.dxf.name:
+            #     log.info(f"Block Name: {block_ref.dxf.name}")
+            #
+            #     for entity in block_ref.virtual_entities():
+            #         log.info(f"Entity Type: {entity.dxftype()}")
+            #         log.info(f"Layer: {entity.dxf.layer}")
+            #         log.info(f"Color: {entity.dxf.color}")
+            #         log.info(f"Linetype: {entity.dxf.linetype}")
+            #         log.info(f"Lineweight: {entity.dxf.lineweight}")
+            #         log.info(f"Material: {entity.dxf.material_handle}")
+            #         log.info(f"Visibility: {entity.dxf.get('visibility', True)}")
+            #         log.info(f"Scale Factors: X={entity.dxf.get('xscale', 1.0)}, Y={entity.dxf.get('yscale', 1.0)}, Z={entity.dxf.get('zscale', 1.0)}")
+            #         log.info("-" * 30)
 
     except Exception as e:
         log.error("Error extracting parameters: %s", str(e))
