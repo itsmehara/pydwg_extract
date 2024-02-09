@@ -38,13 +38,13 @@ def read_main(default_dwg=None):
 
 
 def verify_dxf(dwg_file):
-    # Read the DXF file
-    dxf = DXFGrabber(dwg_file)
-
-    # Print information about each entity in the DXF file
-    for entity in dxf.entities:
-        print(f"Entity Type: {entity.dxftype} | Layer: {entity.layer} | Color: {entity.color}")
-
+    # # Read the DXF file
+    # dxf = DXFGrabber(dwg_file)
+    #
+    # # Print information about each entity in the DXF file
+    # for entity in dxf.entities:
+    #     print(f"Entity Type: {entity.dxftype} | Layer: {entity.layer} | Color: {entity.color}")
+    pass
 
 def read_dwg_elements(file_path):
     doc = ezdxf.readfile(file_path)
